@@ -4,8 +4,9 @@
 
 let randomRequest = () => {
   $.get (serverUrl + '/random', function(data) {
+    data = JSON.parse(data);
     console.log('DATA:', data);
-    SwimTeam.move(data);
+    SwimTeam.move(data.direction);
     setTimeout(randomRequest, 1000);
   })
 }

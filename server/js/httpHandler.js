@@ -21,7 +21,9 @@ module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
   res.writeHead(200, headers);
   let movement = getRandom();
-  res.write(movement);
+  res.write(JSON.stringify({direction: movement} ));
+  // req.url
+
   // req.method ---> GET, POST, etc (type of request)
   // if res.method is GET, do something
   // res.write ---> body of the response
