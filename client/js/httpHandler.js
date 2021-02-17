@@ -2,9 +2,15 @@
 
   const serverUrl = 'http://127.0.0.1:3000';
 
-  //
-  // TODO: build the swim command fetcher here
-  //
+let randomRequest = () => {
+  $.get (serverUrl + '/random', function(data) {
+    console.log('DATA:', data);
+    SwimTeam.move(data);
+    setTimeout(randomRequest, 1000);
+  })
+}
+randomRequest();
+
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
