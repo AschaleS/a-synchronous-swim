@@ -9,3 +9,4 @@ module.exports.dequeue = () => {
   // returns undefined if messages array is empty
   return messages.shift();
 };
+

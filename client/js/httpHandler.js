@@ -7,7 +7,7 @@ let randomRequest = () => {
     data = JSON.parse(data);
     console.log('DATA:', data);
     SwimTeam.move(data.direction);
-    setTimeout(randomRequest, 1000);
+    // setTimeout(randomRequest, 1000);
   })
 }
 randomRequest();
