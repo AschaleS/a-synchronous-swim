@@ -2,16 +2,24 @@
 
   const serverUrl = 'http://127.0.0.1:3000';
 
-let randomRequest = () => {
-  $.get (serverUrl + '/random', function(data) {
+let movementRequest = () => {
+  $.get (serverUrl + '/movement', function(data) {
     data = JSON.parse(data);
-    console.log('DATA:', data);
+    console.log('RANDOM:', data);
     SwimTeam.move(data.direction);
     // setTimeout(randomRequest, 1000);
   })
 }
-randomRequest();
+movementRequest();
 
+let imageRequest = () => {
+  $.get (serverUrl + '/background', function(data) {
+    // data = JSON.parse(data);
+    console.log('IMAGE:', data);
+
+  })
+}
+imageRequest();
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
