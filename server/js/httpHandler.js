@@ -23,7 +23,6 @@ module.exports.router = (req, res, next = ()=>{}) => {
 
     // IF /movement
     if (req.url === '/movement') {
-      console.log('ping');
       res.writeHead(200, headers);
       // let movement = getRandom();
       let movement = messageQueue.dequeue() || getRandom();
@@ -35,30 +34,30 @@ module.exports.router = (req, res, next = ()=>{}) => {
       // if res.method is GET, do something
       // res.write ---> body of the response
       res.end();
-      next(); // invoke next() at the end of a request to help with testing!
 
     } else if (req.url === '/background') {
      fs.readFile(backgroundImageFile, (err, data) => {
-       if(err) {
+       if (err) {
          res.writeHead(404, headers);
-         console.log('this file does not exist');
+         res.end();
        } else {
          res.writeHead(200, headers);
          res.write(data);
          res.end();
-         console.log('file does exist');
-
        }
      })
       console.log('this is an image');
-
     }
+  }
 
-
+  if(req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
+    res.end();
+    next();
 
   }
 
-
+  next();
 };
 
 

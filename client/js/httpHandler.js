@@ -16,7 +16,6 @@ let imageRequest = () => {
   $.get (serverUrl + '/background', function(data) {
     // data = JSON.parse(data);
     console.log('IMAGE:', data);
-
   })
 }
 imageRequest();
