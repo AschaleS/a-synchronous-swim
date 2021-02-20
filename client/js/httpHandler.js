@@ -31,7 +31,7 @@ imageRequest();
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: serverUrl + '/background',
       cache: false,
       contentType: false,
       processData: false,

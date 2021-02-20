@@ -50,14 +50,40 @@ module.exports.router = (req, res, next = ()=>{}) => {
     }
   }
 
-  if(req.method === 'OPTIONS') {
+  if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
     next();
 
   }
 
-  next();
+  // next();
+  if (req.method === 'POST') {
+    if (req.url === '/background') {
+      console.log('POST IS WORKING');
+      // create a buffer
+      let imageFile = Buffer.alloc(0);
+      req.on('data', (chunk) => {
+        // incremenet buffer with incoming data
+        imageFile = Buffer.concat([imageFile, chunk]);
+      })
+      req.on('end', () => {
+        let image = multipart.getFile(imageFile);
+        console.log('Image', image);
+        // Write the data to the file path
+        fs.writeFile(backgroundImageFile, image.data, (err) => {
+          if (err) {
+            res.writehead(404, headers);
+            res.end();
+          } else {
+            res.writeHead(200, headers);
+            res.end(backgroundImageFile);
+          }
+        });
+      })
+    }
+  }
+
 };
 
 
