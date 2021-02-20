@@ -5,8 +5,12 @@ const multipart = require('./multipartUtils');
 const messageQueue = require('./messageQueue');
 
 // Path for the background image ///////////////////////
-module.exports.backgroundImageFile = path.join('.', 'background.jpg');
-let { backgroundImageFile } = module.exports;
+module.exports.jpgImageFile = path.join('.', 'background.jpg');
+module.exports.pngImageFile = path.join('.', 'background-image.png');
+
+let retrievalPath;
+
+let { jpgImageFile, pngImageFile} = module.exports;
 ////////////////////////////////////////////////////////
 
 // let messageQueue = null;
@@ -20,70 +24,75 @@ module.exports.router = (req, res, next = ()=>{}) => {
 
   if(req.method === 'GET') {
     ///additional logic that sorts the movement and image requests
-
     // IF /movement
     if (req.url === '/movement') {
       res.writeHead(200, headers);
       // let movement = getRandom();
       let movement = messageQueue.dequeue() || getRandom();
-      // refactor our movement variable to be a dequeued string
       res.write(JSON.stringify({direction: movement} ));
-      // req.url
-
-      // req.method ---> GET, POST, etc (type of request)
-      // if res.method is GET, do something
-      // res.write ---> body of the response
       res.end();
 
     } else if (req.url === '/background') {
-     fs.readFile(backgroundImageFile, (err, data) => {
+
+      // console.log(backgroundImageFile, module.exports.backgroundImageFile)
+     fs.readFile(retrievalPath, (err, data) => {
        if (err) {
          res.writeHead(404, headers);
          res.end();
+         next();
        } else {
          res.writeHead(200, headers);
-         res.write(data);
+         res.write(data, 'binary');
+         console.log('content type:', res.headers)
          res.end();
+         next();
        }
-     })
-      console.log('this is an image');
+     });
     }
   }
 
   if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
-    next();
-
+    // next();
   }
 
-  // next();
+
   if (req.method === 'POST') {
+    console.log('content type:', req.contentType);
     if (req.url === '/background') {
-      console.log('POST IS WORKING');
       // create a buffer
       let imageFile = Buffer.alloc(0);
       req.on('data', (chunk) => {
-        // incremenet buffer with incoming data
-        imageFile = Buffer.concat([imageFile, chunk]);
+      imageFile = Buffer.concat([imageFile, chunk]);
       })
       req.on('end', () => {
         let image = multipart.getFile(imageFile);
-        console.log('Image', image);
+        console.log('Image Type:', image.type)
+        // Check content type within image object
+        let imagePath;
+        if (image.type === 'image/jpeg') {
+          imagePath = jpgImageFile;
+          retrievalPath = jpgImageFile;
+        } else {
+          imagePath = pngImageFile;
+          retrievalPath = pngImageFile;
+        }
         // Write the data to the file path
-        fs.writeFile(backgroundImageFile, image.data, (err) => {
+        fs.writeFile(imagePath, image.data, (err) => {
           if (err) {
             res.writehead(404, headers);
             res.end();
           } else {
-            res.writeHead(200, headers);
-            res.end(backgroundImageFile);
+            res.writeHead(201, headers);
+            res.end();
           }
+          // res.end();
+          // next();
         });
       })
     }
   }
-
 };
 
 

@@ -52,8 +52,10 @@ imageRequest();
     }
 
     var file = form.files[0];
-    if (file.type !== 'image/jpeg') {
-      console.log('Not a jpg file!');
+
+    var validFormats = ['image/jpeg', 'image/png'];
+    if ( !validFormats.includes(file.type) ) {
+      console.log('Not a valid file format!');
       return;
     }
 
